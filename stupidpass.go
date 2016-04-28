@@ -11,13 +11,14 @@ import (
 	"github.com/tucnak/telebot"
 )
 
-const PASS_LENGTH = 8
+const PASS_LENGTH = 10
 
 var (
-	db               *sql.DB
-	token            = flag.String("t", "", "input telegram bot token")
-	letterRunes      = []rune("abcdefghkmrstwxy23456789")
-	firstletterRunes = []rune("AFKGHTRW")
+	db                *sql.DB
+	token             = flag.String("t", "", "input telegram bot token")
+	letterRunes       = []rune("23456789")
+	secondletterRunes = []rune("abcdefghijkmnpqrstwxy")
+	firstletterRunes  = []rune("ABCDEFGHJKMNQRSTWXY")
 )
 
 func RandString(n int) string {
@@ -25,7 +26,8 @@ func RandString(n int) string {
 	b := make([]rune, n)
 
 	b[0] = firstletterRunes[rand.Intn(len(firstletterRunes))]
-	for i := 1; i < len(b); i++ {
+	b[1] = secondletterRunes[rand.Intn(len(secondletterRunes))]
+	for i := 2; i < len(b); i++ {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
