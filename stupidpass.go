@@ -11,16 +11,21 @@ import (
 	"github.com/tucnak/telebot"
 )
 
+const PASS_LENGTH = 8
+
 var (
-	db          *sql.DB
-	token       = flag.String("t", "", "input telegram bot token")
-	letterRunes = []rune("abcdefghkmrstwxyAFKGHTRW23456789")
+	db               *sql.DB
+	token            = flag.String("t", "", "input telegram bot token")
+	letterRunes      = []rune("abcdefghkmrstwxy23456789")
+	firstletterRunes = []rune("AFKGHTRW")
 )
 
 func RandString(n int) string {
 	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, n)
-	for i := range b {
+
+	b[0] = firstletterRunes[rand.Intn(len(firstletterRunes))]
+	for i := 1; i < len(b); i++ {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
@@ -28,7 +33,7 @@ func RandString(n int) string {
 
 func ResetCommand(m telebot.Message) (pass string, err error) {
 generatePassword:
-	pass = RandString(10)
+	pass = RandString(PASS_LENGTH)
 	query := "SELECT pass FROM stupidpass WHERE uid = ? AND pass = ?"
 	stmt, err := db.Prepare(query)
 	if err != nil {
@@ -113,7 +118,7 @@ func PasswordCommand(m telebot.Message) (pass string, err error) {
 	if err == nil {
 		return
 	}
-	pass = RandString(10)
+	pass = RandString(PASS_LENGTH)
 
 	cmd := "INSERT INTO stupidpass (uid,pass,date) VALUES (?,?,?)"
 	tx, err := db.Begin()
