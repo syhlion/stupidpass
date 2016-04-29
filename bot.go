@@ -154,7 +154,7 @@ func HelpCommand(m telebot.Message) (msg string, err error) {
 }
 
 func init() {
-	d, err := sql.Open("sqlite3", "./db.sqlite3")
+	d, err := sql.Open("sqlite3", "./passdb.sqlite3")
 	if err != nil {
 		return
 	}
